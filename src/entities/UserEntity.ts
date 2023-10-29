@@ -6,7 +6,7 @@ type IUser = {
 }
 
 export class User {
-  constructor(props: IUser) {
+  private constructor(props: IUser) {
     this.name = props.name
     this.username = props.username
     this.password = props.password
@@ -18,4 +18,9 @@ export class User {
   username: string
   id: string
   isAdmin: boolean
+
+  static create(props: IUser) {
+    const user = new User(props)
+    return user
+  }
 }
