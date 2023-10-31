@@ -2,6 +2,7 @@ import { User } from '../../entities/UserEntity'
 import { ParameterRequiredError } from '../../../../errors/parameterRequiredError'
 import { IUserRepository } from '../../repositories/IUserRepository'
 import { UserAlreadyExistsError } from '../../../../errors/UserAlreadyExistsError'
+import { IPasswordCrypto } from '../../../../infra/shared/crypto/IPasswordCrypto'
 
 type UserRequest = {
   name: string
@@ -11,7 +12,10 @@ type UserRequest = {
 }
 
 export class CreateUserUseCase {
-  constructor(private userRepository: IUserRepository) {}
+  constructor(
+    private userRepository: IUserRepository,
+    private passwordCrypto: IPasswordCrypto
+  ) {}
 
   async execute(data: UserRequest) {
     const user = User.create(data)
@@ -25,7 +29,8 @@ export class CreateUserUseCase {
     if (existUser) {
       throw new UserAlreadyExistsError('Username already exists', 400)
     }
-
+    const passwordHashed = await this.passwordCrypto.hash(data.password)
+    user.password = passwordHashed
     const userCreated = await this.userRepository.save(user)
     return userCreated
   }
