@@ -1,4 +1,4 @@
-export class UserAlreadyExistsError extends Error {
+export class AlreadyExistsError extends Error {
   constructor(message: string, statusCode = 500, name = '') {
     super(message)
     this.name = name
