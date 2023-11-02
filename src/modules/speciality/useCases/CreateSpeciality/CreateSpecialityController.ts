@@ -12,9 +12,8 @@ export class SpecialityController {
       const result = await useCase.execute(request.body)
       return response.json(result)
     } catch (err: any) {
-      return response.status(err.statusCode || 400).json({
-        error: err.message,
-      })
+      logger.error(err.stack)
+      return response.status(err.statusCode || 400).json(err.message)
     }
   }
 }
