@@ -1,0 +1,82 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Appointment scheduling service",
+    "description": "This API is responsible for scheduling appointments",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/specialities": {
+      "post" : {
+        "tags": ["Speciality"],
+        "description": "Registration of specialties",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpecialityRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecialityResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SpecialityRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of specialty",
+            "example": "NAME_TEST"
+          },
+          "description": {
+            "type": "string",
+            "description": "Specialty description",
+            "example": "DESCRIPTION_TEST"
+          }
+        },
+        "required": ["name", "description"]
+      },
+      "SpecialityResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Name of specialty",
+            "example": "NAME_TEST"
+          },
+          "description": {
+            "type": "string",
+            "description": "Specialty description",
+            "example": "DESCRIPTION_TEST"
+          },
+          "id": {
+            "type": "string",
+            "description": "Registered specialty id",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Specialty creation date",
+            "format": "date-time"
+          }
+        },
+        "required": ["name", "description"]
+      }
+    }
+  }
+}
