@@ -12,18 +12,16 @@ export class CreateUserController {
   async handle(request: Request, response: Response) {
     logger.info('User being created')
     try {
-      const data = request.body
-
       const useCase = new CreateUserUseCase(
         this.userRepository,
         this.passwordCrypto
       )
-      const result = await useCase.execute(data)
+      const result = await useCase.execute(request.body)
 
       return response.json(result)
     } catch (err: any) {
       logger.error(err.stack)
-      return response.status(err.statusCode).json(err.message)
+      return response.status(err.statusCode || 400).json(err.message)
     }
   }
 }

@@ -1,8 +1,8 @@
 import { User } from '../../entities/UserEntity'
-import { ParameterRequiredError } from '../../../../errors/parameterRequiredError'
 import { IUserRepository } from '../../repositories/IUserRepository'
 import { AlreadyExistsError } from '../../../../errors/AlreadyExistsError'
 import { IPasswordCrypto } from '../../../../infra/shared/crypto/IPasswordCrypto'
+import { BadRequest } from '../../../../errors/BadRequest'
 
 type UserRequest = {
   name: string
@@ -21,7 +21,7 @@ export class CreateUserUseCase {
     const user = User.create(data)
 
     if (!data.username || !data.password) {
-      throw new ParameterRequiredError('Username/password is required.', 422)
+      throw new BadRequest('Username/password is required.', 422)
     }
 
     const existUser = await this.userRepository.findByUsername(data.username)

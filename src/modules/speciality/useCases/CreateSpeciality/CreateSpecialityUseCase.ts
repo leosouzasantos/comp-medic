@@ -1,4 +1,5 @@
 import { AlreadyExistsError } from '../../../../errors/AlreadyExistsError'
+import { BadRequest } from '../../../../errors/BadRequest'
 import { Speciality } from '../../entities/SpecialityEntity'
 import { ISpecialityRepository } from '../../repositories/ISpecialityRepository'
 
@@ -13,7 +14,7 @@ export class CreateSpeciality {
     const speciality = Speciality.create(data)
 
     if (!data.name) {
-      throw Error('Speciality name is required')
+      throw new BadRequest('Speciality name is required')
     }
 
     const existSpeciality = await this.specialityRepository.findBySpeciality(

@@ -1,4 +1,4 @@
-export class ParameterRequiredError extends Error {
+export class BadRequest extends Error {
   constructor(message: string, statusCode?: number) {
     super(message)
     this.name = 'PARAMETER_REQUIRED_ERROR'
