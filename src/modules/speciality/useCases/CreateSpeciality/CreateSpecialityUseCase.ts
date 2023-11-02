@@ -1,6 +1,6 @@
-import { AlreadyExistsError } from '../../../errors/AlreadyExistsError'
-import { Speciality } from '../entities/SpecialityEntity'
-import { ISpecialityRepository } from '../repositories/ISpecialityRepository'
+import { AlreadyExistsError } from '../../../../errors/AlreadyExistsError'
+import { Speciality } from '../../entities/SpecialityEntity'
+import { ISpecialityRepository } from '../../repositories/ISpecialityRepository'
 
 type SpecialityRequest = {
   name: string
