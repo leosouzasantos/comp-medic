@@ -1,37 +1,38 @@
-import { BadRequest } from '../../../../errors/BadRequest'
-import { IPasswordCrypto } from '../../../../infra/shared/crypto/IPasswordCrypto'
-import { IUserRepository } from '../../repositories/IUserRepository'
+import { Either, left, right } from '../../../../core/logic/Either'
 
-type AuthenticateRequest = {
+import { JWT } from '../../domain/jwt'
+import { IUserRepository } from '../../repositories/IUserRepository'
+import { InvalidUsernameOrPasswordError } from './errors/InvalidUsernameOrPasswordError'
+
+type TokenResponse = {
+  token: string
+}
+
+type AuthenticateUserRequest = {
   username: string
   password: string
 }
 
-export class AuthenticateUser {
-  constructor(
-    private userRepository: IUserRepository,
-    private passwordCrypto: IPasswordCrypto
-  ) {}
+type AuthenticateUserResponse = Either<
+  InvalidUsernameOrPasswordError,
+  TokenResponse
+>
 
-  async execute({ username, password }: AuthenticateRequest) {
+export class AuthenticateUser {
+  constructor(private userRepository: IUserRepository) {}
+
+  async execute({
+    username,
+    password,
+  }: AuthenticateUserRequest): Promise<AuthenticateUserResponse> {
     const user = await this.userRepository.findByUsername(username)
 
     if (!user) {
-      throw new BadRequest('User does not exist', 401)
+      return left(new InvalidUsernameOrPasswordError())
     }
 
-    if (!username || !password) {
-      throw new BadRequest('Username/password incorrect', 401)
-    }
+    const { token } = JWT.create(user)
 
-    const comparePassword = await this.passwordCrypto.compare(
-      password,
-      user.password
-    )
-
-    if (!comparePassword) {
-      throw new BadRequest('Password incorrect', 401)
-    }
-    return user
+    return right({ token })
   }
 }

@@ -1,27 +1,35 @@
-import { Request, Response } from 'express'
 import { AuthenticateUser } from './AuthenticatecaseUserUseCase'
-import { IUserRepository } from '../../repositories/IUserRepository'
-import { IPasswordCrypto } from '../../../../infra/shared/crypto/IPasswordCrypto'
+import { Controller } from '../../../../core/infra/Controller'
+import {
+  HttpResponse,
+  ok,
+  fail,
+  clientError,
+} from '../../../../core/infra/HttpResponse'
 
-export class AuthenticateUserController {
-  constructor(
-    private userRepository: IUserRepository,
-    private passwordCrypto: IPasswordCrypto
-  ) {}
+type AuthenticateUserControllerRequest = {
+  username: string
+  password: string
+}
 
-  async handle(request: Request, response: Response) {
+export class AuthenticateUserController implements Controller {
+  constructor(private authenticateUser: AuthenticateUser) {}
+
+  async handle({
+    username,
+    password,
+  }: AuthenticateUserControllerRequest): Promise<HttpResponse> {
     try {
-      const data = request.body
-
-      const useCase = new AuthenticateUser(
-        this.userRepository,
-        this.passwordCrypto
-      )
-
-      const result = await useCase.execute(data)
-      return response.json(result)
+      const result = await this.authenticateUser.execute({ username, password })
+      if (result.isLeft()) {
+        const error = result.value
+        return clientError(error)
+      } else {
+        const { token } = result.value
+        return ok({ token })
+      }
     } catch (err: any) {
-      return response.status(err.statusCode).json(err.message)
+      return fail(err)
     }
   }
 }
