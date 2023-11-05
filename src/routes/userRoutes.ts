@@ -1,12 +1,12 @@
-import { Router, response } from 'express'
+import { Router } from 'express'
 import { createUserController } from '../modules/users/useCases/CreateUser'
-import { authenticateUserController } from '../modules/users/useCases/AuthenticateUser'
+import { adaptMiddleware } from '../core/infra/adapters/ExpressMiddlewareAdapter'
 
 const userRouter = Router()
 
-userRouter.post('/login', async (request, response) => {
-  await authenticateUserController.handle(request, response)
-})
+userRouter.use()
+
+userRouter.use(adaptMiddleware(makeEnsureAuthenticatedMiddleware()))
 
 userRouter.post('/users', async (request, response) => {
   await createUserController.handle(request, response)
