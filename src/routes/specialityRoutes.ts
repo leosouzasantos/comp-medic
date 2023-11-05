@@ -1,10 +1,10 @@
-import { Router } from 'express'
-import { specialityController } from '../modules/speciality/useCases/CreateSpeciality'
+// import { Router } from 'express'
+// import { specialityController } from '../modules/speciality/useCases/CreateSpeciality'
 
-const specialityRouter = Router()
+// const specialityRouter = Router()
 
-specialityRouter.post('/specialities', async (request, response) => {
-  await specialityController.handle(request, response)
-})
+// specialityRouter.post('/specialities', async (request, response) => {
+//   await specialityController.handle(request, response)
+// })
 
-export { specialityRouter }
+// export { specialityRouter }
