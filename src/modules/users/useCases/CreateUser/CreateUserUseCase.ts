@@ -12,7 +12,6 @@ type UserRequest = {
   name: string
   username: string
   password: string
-  isAdmin: false
 }
 
 type CreateUserResponse = Either<

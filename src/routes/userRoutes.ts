@@ -1,12 +1,13 @@
 import express from 'express'
-import { createUserController } from '../modules/users/useCases/CreateUser'
+import { adaptRoute } from '../core/infra/adapters/ExpressRouteAdapter'
+import { adaptMiddleware } from '../core/infra/adapters/ExpressMiddlewareAdapter'
+import { makeAuthenticateUserController } from '../infra/http/factories/controllers/AuthenticateUserControllerFactory'
+import { makeRegisterUserController } from '../infra/http/factories/controllers/RegisterUserControllerFactory'
 
 const userRouter = express.Router()
 
-userRouter.use()
+// userRouter.use(adaptMiddleware(makeAuthenticateUserController()))
 
-userRouter.post('/users', async (request, response) => {
-  await createUserController.handle(request, response)
-})
+userRouter.post('/', adaptRoute(makeRegisterUserController()))
 
 export { userRouter }

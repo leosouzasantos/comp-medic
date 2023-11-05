@@ -13,7 +13,9 @@ export function ok<T>(dto?: T): HttpResponse {
 export function created(): HttpResponse {
   return {
     statusCode: 201,
-    body: undefined,
+    body: {
+      MessageEvent: 'Success, check your database',
+    },
   }
 }
 

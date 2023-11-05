@@ -1,7 +1,7 @@
 import { sign, verify } from 'jsonwebtoken'
-import { InvalidJWTTokenError } from '../../../errors/InvalidJWTTokenError'
-import { auth } from '../../../config/auth'
-import { User } from '../entities/UserEntity'
+import { InvalidJWTTokenError } from './errors/InvalidJWTTokenError'
+import { auth } from '../../../../config/auth'
+import { User } from './user'
 
 export interface JWTData {
   userId: string

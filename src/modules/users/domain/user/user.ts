@@ -1,5 +1,5 @@
-import { Either, right } from '../../../../core/logic/Either'
 import { UserEntity } from '../../entities/UserEntity'
+import { Either, right } from '../../../../core/logic/Either'
 import { InvalidNameError } from './errors/InvalidNameError'
 import { InvalidPasswordLengthError } from './errors/InvalidPasswordLenghtError'
 import { InvalidUsernameError } from './errors/InvalidUsernameError'

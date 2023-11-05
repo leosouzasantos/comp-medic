@@ -1,22 +1,37 @@
 import { prisma } from '../../../../infra/prisma/client'
-import { User } from '../../entities/UserEntity'
+import { User } from '../../domain/user/user'
+import { UserMapper } from '../../mappers/UserMapper'
 import { IUserRepository } from '../IUserRepository'
 
 export class PrismaUserRepository implements IUserRepository {
-  async findByUsername(username: string): Promise<User | undefined> {
+  async exists(username: string): Promise<boolean> {
+    const userExists = await prisma.user.findUnique({
+      where: { username },
+    })
+
+    return !!userExists
+  }
+
+  async findByUsername(username: string): Promise<User> {
     const user = await prisma.user.findUnique({
       where: { username },
     })
-    return user || undefined
+
+    if (!user) {
+      throw new Error('Error creating User object')
+    }
+    return UserMapper.toDomain(user)
   }
-  async save(data: User): Promise<User> {
-    const user = await prisma.user.create({
-      data: {
-        name: data.name,
-        username: data.username,
-        password: data.password,
-      },
-    })
-    return user
+
+  // async save(user: User): Promise<void> {
+  //   const data = await UserMapper.toPersistence(user)
+
+  //   await prisma.update()
+  // }
+
+  async create(user: User): Promise<void> {
+    const data = await UserMapper.toPersistence(user)
+
+    await prisma.user.create({ data })
   }
 }
