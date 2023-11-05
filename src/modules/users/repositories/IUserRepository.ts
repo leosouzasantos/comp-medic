@@ -1,6 +1,8 @@
-import { User } from '../entities/UserEntity'
+import { User } from '../domain/user/user'
 
 export interface IUserRepository {
+  exists(username: string): Promise<boolean>
   findByUsername(username: string): Promise<User | undefined>
-  save(data: User): Promise<User>
+  save(user: User): Promise<void>
+  create(user: User): Promise<void>
 }

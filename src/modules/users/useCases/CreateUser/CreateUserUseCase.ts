@@ -1,8 +1,12 @@
-import { User } from '../../entities/UserEntity'
+import { Either, left, right } from '../../../../core/logic/Either'
+import { InvalidNameError } from '../../domain/user/errors/InvalidNameError'
+import { InvalidPasswordLengthError } from '../../domain/user/errors/InvalidPasswordLenghtError'
+import { UserAlreadyExistsError } from './errors/UserAlreadyExistsError'
+import { User } from '../../domain/user/user'
 import { IUserRepository } from '../../repositories/IUserRepository'
-import { AlreadyExistsError } from '../../../../errors/AlreadyExistsError'
-import { IPasswordCrypto } from '../../../../infra/shared/crypto/IPasswordCrypto'
-import { BadRequest } from '../../../../errors/BadRequest'
+import { Name } from '../../domain/user/name'
+import { Username } from '../../domain/user/username'
+import { Password } from '../../domain/user/password'
 
 type UserRequest = {
   name: string
@@ -11,27 +15,60 @@ type UserRequest = {
   isAdmin: false
 }
 
-export class CreateUserUseCase {
-  constructor(
-    private userRepository: IUserRepository,
-    private passwordCrypto: IPasswordCrypto
-  ) {}
+type CreateUserResponse = Either<
+  | UserAlreadyExistsError
+  | InvalidNameError
+  | InvalidNameError
+  | InvalidPasswordLengthError,
+  User
+>
 
-  async execute(data: UserRequest) {
-    const user = User.create(data)
+export class CreateUser {
+  constructor(private userRepository: IUserRepository) {}
 
-    if (!data.username || !data.password) {
-      throw new BadRequest('Username/password is required.', 422)
+  async execute({
+    name,
+    username,
+    password,
+  }: UserRequest): Promise<CreateUserResponse> {
+    const nameOrError = Name.create(name)
+    const usernameOrError = Username.create(username)
+    const passwordOrError = Password.create(password)
+
+    if (nameOrError.isLeft()) {
+      return left(nameOrError.value)
     }
 
-    const existUser = await this.userRepository.findByUsername(data.username)
-
-    if (existUser) {
-      throw new AlreadyExistsError('Username already exists', 400)
+    if (usernameOrError.isLeft()) {
+      return left(usernameOrError.value)
     }
-    const passwordHashed = await this.passwordCrypto.hash(data.password)
-    user.password = passwordHashed
-    const userCreated = await this.userRepository.save(user)
-    return userCreated
+
+    if (passwordOrError.isLeft()) {
+      return left(passwordOrError.value)
+    }
+
+    const userOrError = User.create({
+      name: nameOrError.value,
+      username: usernameOrError.value,
+      password: passwordOrError.value,
+    })
+
+    if (userOrError.isLeft()) {
+      return left(userOrError.value)
+    }
+
+    const user = userOrError.value
+
+    const userAlreadyExists = await this.userRepository.exists(
+      user.username.value
+    )
+
+    if (userAlreadyExists) {
+      return left(new UserAlreadyExistsError(user.username.value))
+    }
+
+    await this.userRepository.create(user)
+
+    return right(user)
   }
 }

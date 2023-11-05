@@ -1,27 +1,32 @@
 import { randomUUID } from 'crypto'
 
-type IUser = {
-  name: string
-  password: string
-  username: string
-}
+export abstract class UserEntity<T> {
+  protected readonly _id: string
+  public readonly props: T
+  public isAdmin: boolean = false
 
-export class User {
-  private constructor(props: IUser) {
-    this.id = randomUUID()
-    this.name = props.name
-    this.username = props.username
-    this.password = props.password
-    this.isAdmin = false
+  get id() {
+    return this._id
   }
-  id: string
-  name: string
-  password: string
-  username: string
-  isAdmin: boolean
 
-  static create(props: IUser) {
-    const user = new User(props)
-    return user
+  constructor(props: T, id?: string) {
+    this._id = id || randomUUID()
+    this.props = props
+  }
+
+  public equals(object?: UserEntity<T>): boolean {
+    if (object === null || object === undefined) {
+      return false
+    }
+
+    if (this === object) {
+      return true
+    }
+
+    if (!(object instanceof UserEntity)) {
+      return false
+    }
+
+    return this._id === object._id
   }
 }
