@@ -1,19 +1,39 @@
-import { Request, Response } from 'express'
-import { ISpecialityRepository } from '../../repositories/ISpecialityRepository'
-import { logger } from '../../../../utils/logger'
+import { Controller } from '../../../../core/infra/Controller'
+import {
+  HttpResponse,
+  clientError,
+  fail,
+  ok,
+} from '../../../../core/infra/HttpResponse'
 import { CreateSpeciality } from './CreateSpecialityUseCase'
 
-export class SpecialityController {
-  constructor(private specialityRepository: ISpecialityRepository) {}
-  async handle(request: Request, response: Response) {
-    logger.info('specialty being created')
+type CreateSpecialityControllerRequest = {
+  name: string
+  description: string
+}
+
+export class CreateSpecialityController implements Controller {
+  constructor(private createSpeciality: CreateSpeciality) {}
+
+  async handle({
+    name,
+    description,
+  }: CreateSpecialityControllerRequest): Promise<HttpResponse> {
     try {
-      const useCase = new CreateSpeciality(this.specialityRepository)
-      const result = await useCase.execute(request.body)
-      return response.json(result)
+      const result = await this.createSpeciality.execute({ name, description })
+
+      if (result.isLeft()) {
+        const error = result.value
+
+        switch (error.constructor) {
+          default:
+            return clientError(error)
+        }
+      } else {
+        return ok(result)
+      }
     } catch (err: any) {
-      logger.error(err.stack)
-      return response.status(err.statusCode || 400).json(err.message)
+      return fail(err)
     }
   }
 }

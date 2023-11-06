@@ -1,10 +1,9 @@
-// import { Router } from 'express'
-// import { specialityController } from '../modules/speciality/useCases/CreateSpeciality'
+import express from 'express'
+import { adaptRoute } from '../core/infra/adapters/ExpressRouteAdapter'
+import { MakeCreateSpecialityController } from '../infra/http/factories/controllers/CreateSpecialityController'
 
-// const specialityRouter = Router()
+const specialityRouter = express.Router()
 
-// specialityRouter.post('/specialities', async (request, response) => {
-//   await specialityController.handle(request, response)
-// })
+specialityRouter.post('/', adaptRoute(MakeCreateSpecialityController()))
 
-// export { specialityRouter }
+export { specialityRouter }
