@@ -17,7 +17,7 @@ type DecodedJwt = {
   sub: string
 }
 
-export class EnsureAuthenticateMiddleware implements Middleware {
+export class EnsureAuthenticatedMiddleware implements Middleware {
   constructor() {}
 
   async handle(
@@ -27,11 +27,12 @@ export class EnsureAuthenticateMiddleware implements Middleware {
       const { accessToken } = request
 
       if (accessToken) {
+        const tokenWithoutBearer = accessToken.replace('Bearer ', '')
         try {
-          const decoded = decode(accessToken) as DecodedJwt
-
+          const decoded = decode(tokenWithoutBearer) as DecodedJwt
           return ok({ userId: decoded.sub })
         } catch (err: any) {
+          console.log('erro = ' + err)
           return forbidden(new AccessDeniedError())
         }
       }

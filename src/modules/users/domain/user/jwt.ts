@@ -42,13 +42,23 @@ export class JWT {
     return jwt
   }
 
-  static create(user: User): JWT {
-    const token = sign({}, auth.secretKey, {
-      subject: user.id,
-      expiresIn: auth.expiresIn,
-    })
+  static create({ username, isAdmin, id }: User): JWT {
+    const token = sign(
+      {
+        user: {
+          username,
+          isAdmin,
+          id,
+        },
+      },
+      auth.secretKey,
+      {
+        subject: id,
+        expiresIn: auth.expiresIn,
+      }
+    )
 
-    const jwt = new JWT({ userId: user.id, token })
+    const jwt = new JWT({ userId: User.id, token })
     return jwt
   }
 }

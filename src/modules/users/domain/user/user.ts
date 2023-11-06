@@ -14,6 +14,7 @@ interface IUserProps {
 }
 
 export class User extends UserEntity<IUserProps> {
+  static id: string
   get name() {
     return this.props.name
   }

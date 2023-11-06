@@ -1,10 +1,9 @@
-// import { Router } from 'express'
-// import { adaptRoute } from '../core/infra/adapters/ExpressRouteAdapter'
-// import { makeAuthenticateUserController } from '../infra/http/factories/controllers/AuthenticateUserControllerFactory'
+import express from 'express'
+import { adaptRoute } from '../core/infra/adapters/ExpressRouteAdapter'
+import { makeAuthenticateUserController } from '../infra/http/factories/controllers/AuthenticateUserControllerFactory'
 
-// const sessionsRouter = Router()
-// sessionsRouter.use()
+const sessionsRouter = express.Router()
 
-// sessionsRouter.post('/', adaptRoute(makeAuthenticateUserController()))
+sessionsRouter.post('/', adaptRoute(makeAuthenticateUserController()))
 
-// export { sessionsRouter }
+export { sessionsRouter }

@@ -15,4 +15,12 @@ export class PrismaSpeciality implements ISpecialityRepository {
     }
     return SpecialityMapper.toDomain(speciality)
   }
+
+  async exists(name: string): Promise<boolean> {
+    const specialityExists = await prisma.speciality.findUnique({
+      where: { name },
+    })
+
+    return !!specialityExists
+  }
 }

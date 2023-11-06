@@ -5,6 +5,7 @@ import { InvalidNameError } from '../../domain/speciality/errors/InvalidNameErro
 import { Name } from '../../domain/speciality/Name'
 import { Speciality } from '../../domain/speciality/speciality'
 import { ISpecialityRepository } from '../../repositories/ISpecialityRepository'
+import { SpecialityAlreadyExistsError } from './errors/SpecialityAlreadyExistsError'
 
 type SpecialityRequest = {
   name: string
@@ -12,7 +13,7 @@ type SpecialityRequest = {
 }
 
 type SpecialityResponse = Either<
-  InvalidNameError | InvalidDescriptionError,
+  InvalidNameError | InvalidDescriptionError | SpecialityAlreadyExistsError,
   Speciality
 >
 
@@ -44,6 +45,14 @@ export class CreateSpeciality {
     }
 
     const speciality = specialityOrError.value
+
+    const specialityAlreadyExists = await this.specialityRepository.exists(
+      speciality.name.value
+    )
+
+    if (specialityAlreadyExists) {
+      return left(new SpecialityAlreadyExistsError(speciality.name.value))
+    }
 
     await this.specialityRepository.create(speciality)
 

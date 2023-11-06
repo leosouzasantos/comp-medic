@@ -4,9 +4,10 @@ import { Middleware } from '../Middleware'
 export const adaptMiddleware = (middleware: Middleware) => {
   return async (request: Request, response: Response, next: NextFunction) => {
     const requestData = {
-      accessToken: request.headers?.['x-access-token'],
+      accessToken: request.headers?.['authorization'],
       ...(request.headers || {}),
     }
+    console.log(requestData)
 
     const httpResponse = await middleware.handle(requestData, request.body)
 
