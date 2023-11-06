@@ -1,22 +1,31 @@
 import { randomUUID } from 'crypto'
 
-type ISpeciality = {
-  name: string
-  description: string
-}
+export abstract class SpecialityEntity<T> {
+  protected readonly _id: string
+  public readonly props: T
 
-export class Speciality {
-  private constructor(props: ISpeciality) {
-    this.name = props.name
-    this.description = props.description
-    this.id = randomUUID()
+  get id() {
+    return this._id
   }
-  id: string
-  name: string
-  description: string
 
-  static create(props: ISpeciality) {
-    const speciality = new Speciality(props)
-    return speciality
+  constructor(props: T, id?: string) {
+    this._id = id || randomUUID()
+    this.props = props
+  }
+
+  public equals(object?: SpecialityEntity<T>): boolean {
+    if (object === null || object === undefined) {
+      return false
+    }
+
+    if (this === object) {
+      return true
+    }
+
+    if (!(object instanceof SpecialityEntity)) {
+      return false
+    }
+
+    return this._id === object._id
   }
 }

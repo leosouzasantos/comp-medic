@@ -23,12 +23,6 @@ export class PrismaUserRepository implements IUserRepository {
     return UserMapper.toDomain(user)
   }
 
-  // async save(user: User): Promise<void> {
-  //   const data = await UserMapper.toPersistence(user)
-
-  //   await prisma.update()
-  // }
-
   async create(user: User): Promise<void> {
     const data = await UserMapper.toPersistence(user)
 

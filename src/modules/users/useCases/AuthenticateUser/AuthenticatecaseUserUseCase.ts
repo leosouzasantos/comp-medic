@@ -31,6 +31,12 @@ export class AuthenticateUser {
       return left(new InvalidUsernameOrPasswordError())
     }
 
+    const isPasswordValid = await user.password.comparePassword(password)
+
+    if (isPasswordValid === false) {
+      return left(new InvalidUsernameOrPasswordError())
+    }
+
     const { token } = JWT.create(user)
 
     return right({ token })

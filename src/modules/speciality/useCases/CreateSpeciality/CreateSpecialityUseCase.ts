@@ -1,6 +1,9 @@
-import { AlreadyExistsError } from '../../../../errors/AlreadyExistsError'
-import { BadRequest } from '../../../../errors/BadRequest'
-import { Speciality } from '../../entities/SpecialityEntity'
+import { Either, left, right } from '../../../../core/logic/Either'
+import { Description } from '../../domain/speciality/Description'
+import { InvalidDescriptionError } from '../../domain/speciality/errors/InvalidDescriptionError'
+import { InvalidNameError } from '../../domain/speciality/errors/InvalidNameError'
+import { Name } from '../../domain/speciality/Name'
+import { Speciality } from '../../domain/speciality/speciality'
 import { ISpecialityRepository } from '../../repositories/ISpecialityRepository'
 
 type SpecialityRequest = {
@@ -8,24 +11,42 @@ type SpecialityRequest = {
   description: string
 }
 
+type SpecialityResponse = Either<
+  InvalidNameError | InvalidDescriptionError,
+  Speciality
+>
+
 export class CreateSpeciality {
   constructor(private specialityRepository: ISpecialityRepository) {}
-  async execute(data: SpecialityRequest) {
-    const speciality = Speciality.create(data)
 
-    if (!data.name) {
-      throw new BadRequest('Speciality name is required')
+  async execute({
+    name,
+    description,
+  }: SpecialityRequest): Promise<SpecialityResponse> {
+    const nameOrError = Name.create(name)
+    const descriptionOrError = Description.create(description)
+
+    if (nameOrError.isLeft()) {
+      return left(nameOrError.value)
     }
 
-    const existSpeciality = await this.specialityRepository.findBySpeciality(
-      data.name
-    )
-
-    if (existSpeciality) {
-      throw new AlreadyExistsError('Speciality already exists', 400)
+    if (descriptionOrError.isLeft()) {
+      return left(descriptionOrError.value)
     }
 
-    const specialityCreated = await this.specialityRepository.save(speciality)
-    return specialityCreated
+    const specialityOrError = Speciality.create({
+      name: nameOrError.value,
+      description: descriptionOrError.value,
+    })
+
+    if (specialityOrError.isLeft()) {
+      return left(specialityOrError.value)
+    }
+
+    const speciality = specialityOrError.value
+
+    await this.specialityRepository.create(speciality)
+
+    return right(speciality)
   }
 }

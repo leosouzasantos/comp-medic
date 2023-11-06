@@ -3,8 +3,8 @@ import {
   HttpResponse,
   clientError,
   conflict,
-  created,
   fail,
+  ok,
 } from '../../../../core/infra/HttpResponse'
 import { CreateUser } from './CreateUserUseCase'
 import { UserAlreadyExistsError } from './errors/UserAlreadyExistsError'
@@ -38,7 +38,7 @@ export class UserController implements Controller {
             return clientError(error)
         }
       } else {
-        return created()
+        return ok(result)
       }
     } catch (err: any) {
       return fail(err)

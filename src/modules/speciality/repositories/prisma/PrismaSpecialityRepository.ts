@@ -1,26 +1,18 @@
 import { prisma } from '../../../../infra/prisma/client'
-import { Speciality } from '../../entities/SpecialityEntity'
+import { Speciality } from '../../domain/speciality/speciality'
+import { SpecialityMapper } from '../../mappers/SpecialityMapper'
 import { ISpecialityRepository } from '../ISpecialityRepository'
 
 export class PrismaSpeciality implements ISpecialityRepository {
-  async save(data: Speciality): Promise<Speciality> {
-    const speciality = await prisma.speciality.create({
-      data: {
-        name: data.name,
-        description: data.description,
-        id: data.id,
-      },
-    })
-    return speciality
+  async create(speciality: Speciality): Promise<void> {
+    const data = SpecialityMapper.toPersistence(speciality)
+    await prisma.speciality.create({ data })
   }
-  async findBySpeciality(name: string): Promise<Speciality | null> {
-    return await prisma.speciality.findUnique({
-      where: { name },
-    })
-  }
-  async findById(id: string): Promise<Speciality | null> {
-    return await prisma.speciality.findUnique({
-      where: { id },
-    })
+  async findByName(name: string): Promise<Speciality> {
+    const speciality = await prisma.speciality.findUnique({ where: { name } })
+    if (!speciality) {
+      throw new Error('Error creating Speciality object')
+    }
+    return SpecialityMapper.toDomain(speciality)
   }
 }
