@@ -9,6 +9,11 @@
     "/specialities": {
       "post" : {
         "tags": ["Speciality"],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
         "description": "Registration of specialties",
         "requestBody": {
           "content": {
@@ -28,6 +33,29 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "post": {
+        "description": "User authentication.",
+        "tags": ["users"],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref":"#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Generated token"
+          },
+          "400": {
+            "description": "Error message"
           }
         }
       }
@@ -75,6 +103,30 @@
             "format": "date-time"
           }
         }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Login username",
+            "example": "username_test"
+          },
+          "password": {
+            "type": "string",
+            "description": "Password username",
+            "example": "password_test"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "description": "API authentication.",
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "tokenUrl": "http://localhost:8080/sessions"
       }
     }
   }
