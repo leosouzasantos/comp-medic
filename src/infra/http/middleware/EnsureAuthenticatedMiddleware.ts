@@ -30,6 +30,7 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
         const tokenWithoutBearer = accessToken.replace('Bearer ', '')
         try {
           const decoded = decode(tokenWithoutBearer) as DecodedJwt
+
           return ok({ userId: decoded.sub })
         } catch (err: any) {
           console.log('erro = ' + err)

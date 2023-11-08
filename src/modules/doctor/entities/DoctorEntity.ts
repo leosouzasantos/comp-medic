@@ -1,9 +1,8 @@
 import { randomUUID } from 'crypto'
 
-export abstract class UserEntity<T> {
+export abstract class DoctorEntity<T> {
   protected readonly _id: string
   public readonly props: T
-  public readonly isAdmin: boolean = false
 
   get id() {
     return this._id
@@ -14,7 +13,7 @@ export abstract class UserEntity<T> {
     this.props = props
   }
 
-  public equals(object?: UserEntity<T>): boolean {
+  public equals(object?: DoctorEntity<T>): boolean {
     if (object === null || object === undefined) {
       return false
     }
@@ -23,7 +22,7 @@ export abstract class UserEntity<T> {
       return true
     }
 
-    if (!(object instanceof UserEntity)) {
+    if (!(object instanceof DoctorEntity)) {
       return false
     }
 

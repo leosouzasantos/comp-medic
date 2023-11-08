@@ -1,15 +1,24 @@
-import { User } from '../../entities/UserEntity'
+import { User } from '../../domain/user/user'
 import { IUserRepository } from '../IUserRepository'
 
 export class InMemoryUserRepository implements IUserRepository {
-  users: User[] = []
+  constructor(public items: User[] = []) {}
 
-  async findByUsername(username: string) {
-    return this.users.find((user) => user.username === username)
+  async exists(username: string): Promise<boolean> {
+    return this.items.some((user) => user.username.value === username)
+  }
+  async create(user: User): Promise<void> {
+    this.items.push(user)
   }
 
-  async save(data: User) {
-    this.users.push(data)
-    return data
+  async findByUsername(username: string): Promise<User> {
+    const foundUser = this.items.find(
+      (user) => user.username.value === username
+    )
+    if (foundUser) {
+      return foundUser
+    } else {
+      throw new Error('User not found')
+    }
   }
 }

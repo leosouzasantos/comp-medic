@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/server.ts"
+    "dev": "nodemon src/server.ts",
+    "test": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -27,6 +28,7 @@
     "nodemon": "^3.0.1",
     "prisma": "^5.5.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "vitest": "^0.34.6"
   }
 }
