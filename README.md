@@ -23,3 +23,11 @@
   - [ ] Não deve ser possível cadastrar uma especialidade com nome vazio.
 
 ---
+
+### **Cadastro de Médico**
+
+- [ ] Deve ser possível cadastrar um médico
+  - [ ] O médico deve possuir um CRM com 6 dígitos
+  - [ ] O médico deve estar atrelado a um usuário
+  - [ ] O médico deve ter uma e somente uma especialidade
+  - [ ] Não deve ser possível cadastrar um médico sem CRM
