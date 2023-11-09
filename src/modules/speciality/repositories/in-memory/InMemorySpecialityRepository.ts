@@ -1,19 +1,21 @@
-import { Speciality } from '../../entities/SpecialityEntity'
+import { Speciality } from '../../domain/speciality/speciality'
 import { ISpecialityRepository } from '../ISpecialityRepository'
 
 export class InMemorySpecialityRepository implements ISpecialityRepository {
-  items: Speciality[] = []
-
-  async findBySpeciality(name: string): Promise<Speciality | null> {
-    return this.items.find((speciality) => speciality.name === name) || null
+  constructor(public items: Speciality[] = []) {}
+  async create(speciality: Speciality): Promise<void> {
+    this.items.push(speciality)
+  }
+  async findByName(name: string): Promise<Speciality | undefined> {
+    return this.items.find((speciality) => {
+      speciality.name.value === name
+    })
+  }
+  async exists(name: string): Promise<boolean> {
+    return this.items.some((speciality) => speciality.name.value === name)
   }
 
-  async findById(id: string): Promise<Speciality | null> {
-    return this.items.find((speciality) => speciality.id === id) || null
-  }
-
-  async save(data: Speciality): Promise<Speciality> {
-    this.items.push(data)
-    return data
+  async findById(id: string): Promise<Speciality | undefined> {
+    return this.items.find((speciality) => speciality.id === id)
   }
 }

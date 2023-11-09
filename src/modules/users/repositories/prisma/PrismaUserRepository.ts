@@ -18,8 +18,18 @@ export class PrismaUserRepository implements IUserRepository {
     })
 
     if (!user) {
-      throw new Error('Error creating User object')
+      throw new Error('Error when fetching User object')
     }
+    return UserMapper.toDomain(user)
+  }
+
+  async findById(id: string): Promise<User | undefined> {
+    const user = await prisma.user.findUnique({ where: { id } })
+
+    if (!user) {
+      throw new Error('Error when searching for user id')
+    }
+
     return UserMapper.toDomain(user)
   }
 

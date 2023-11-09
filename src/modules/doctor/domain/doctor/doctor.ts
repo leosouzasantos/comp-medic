@@ -14,8 +14,6 @@ interface IDoctorProps {
 
 export class Doctor extends DoctorEntity<IDoctorProps> {
   static id: string
-  userId: string
-  specialityId: string
 
   get crm() {
     return this.props.crm
@@ -25,11 +23,16 @@ export class Doctor extends DoctorEntity<IDoctorProps> {
     return this.props.crm
   }
 
+  get userId() {
+    return this.props.userId
+  }
+
+  get specialityId() {
+    return this.props.specialityId
+  }
+
   private constructor(props: IDoctorProps, id?: string) {
     super(props, id)
-
-    this.userId = props.userId
-    this.specialityId = props.specialityId
   }
 
   static create(

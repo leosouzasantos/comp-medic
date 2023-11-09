@@ -11,14 +11,11 @@ export class InMemoryUserRepository implements IUserRepository {
     this.items.push(user)
   }
 
-  async findByUsername(username: string): Promise<User> {
-    const foundUser = this.items.find(
-      (user) => user.username.value === username
-    )
-    if (foundUser) {
-      return foundUser
-    } else {
-      throw new Error('User not found')
-    }
+  async findByUsername(username: string): Promise<User | undefined> {
+    return this.items.find((user) => user.username.value === username)
+  }
+
+  async findById(id: string): Promise<User | undefined> {
+    return this.items.find((user) => user.id === id)
   }
 }

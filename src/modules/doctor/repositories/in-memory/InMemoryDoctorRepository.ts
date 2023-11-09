@@ -1,4 +1,3 @@
-import { Crm } from '../../domain/doctor/crm'
 import { Doctor } from '../../domain/doctor/doctor'
 import { IDoctorRepository } from '../IDoctorRepository'
 
@@ -9,7 +8,7 @@ export class InMemoryDoctorRepository implements IDoctorRepository {
     this.items.push(doctor)
   }
 
-  async findByCRM(crm: string): Promise<Doctor> {
+  async findByCRM(crm: string): Promise<Doctor | undefined> {
     return this.items.find((doctor) => doctor.crm.value === crm)
   }
 }
