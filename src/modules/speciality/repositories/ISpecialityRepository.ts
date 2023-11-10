@@ -4,5 +4,5 @@ export interface ISpecialityRepository {
   create(speciality: Speciality): Promise<void>
   findByName(name: string): Promise<Speciality | undefined>
   exists(name: string): Promise<boolean>
-  findById(data: string): Promise<Speciality | undefined>
+  findById(id: string): Promise<Speciality | undefined>
 }

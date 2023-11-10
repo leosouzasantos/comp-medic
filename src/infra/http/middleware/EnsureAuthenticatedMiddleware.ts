@@ -33,7 +33,6 @@ export class EnsureAuthenticatedMiddleware implements Middleware {
 
           return ok({ userId: decoded.sub })
         } catch (err: any) {
-          console.log('erro = ' + err)
           return forbidden(new AccessDeniedError())
         }
       }

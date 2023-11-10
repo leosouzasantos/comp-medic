@@ -1,22 +1,22 @@
 import { Either, left, right } from '../../../../core/logic/Either'
-
 import { ISpecialityRepository } from '../../../speciality/repositories/ISpecialityRepository'
 import { IUserRepository } from '../../../users/repositories/IUserRepository'
-
 import { Crm } from '../../domain/doctor/crm'
 import { Doctor } from '../../domain/doctor/doctor'
 import { Email } from '../../domain/doctor/email'
 import { InvalidCrmError } from '../../domain/doctor/errors/InvalidCrmError'
 import { InvalidEmailError } from '../../domain/doctor/errors/InvalidEmailError'
 import { IDoctorRepository } from '../../repositories/IDoctorRepository'
-import { SpecialityNotExistsError } from './errors/SpecialityNotExistsError'
-import { UserDocAlreadyExistsError } from './errors/UserDocAlreadyExistsError'
+import { CrmAlreadyExistError } from './errors/CrmAlreadyExistsError'
+import { EmailAlreadyExistError } from './errors/EmailAlreadyExistsError'
+import { InvalidSpecialityError } from './errors/InvalidSpecialityError'
+import { InvalidUserError } from './errors/InvalidUserError'
 
 export type DoctorRequest = {
-  email: string
   crm: string
-  specialityId: string
+  email: string
   userId: string
+  specialityId: string
 }
 
 type DoctorResponse = Either<InvalidCrmError | InvalidEmailError, Doctor>
@@ -29,9 +29,9 @@ export class CreateDoctor {
   ) {}
 
   async execute({
-    userId,
-    email,
     crm,
+    email,
+    userId,
     specialityId,
   }: DoctorRequest): Promise<DoctorResponse> {
     const crmOrError = Crm.create(crm)
@@ -48,20 +48,20 @@ export class CreateDoctor {
     const speciality = await this.specialityRepository.findById(specialityId)
 
     if (!speciality) {
-      return left(new SpecialityNotExistsError())
+      return left(new InvalidSpecialityError())
     }
 
     const user = await this.userRepository.findById(userId)
 
-    if (user) {
-      return left(new UserDocAlreadyExistsError())
+    if (!user) {
+      return left(new InvalidUserError())
     }
 
     const doctorOrError = Doctor.create({
       crm: crmOrError.value,
       email: emailOrError.value,
-      specialityId: speciality.id,
       userId,
+      specialityId,
     })
 
     if (doctorOrError.isLeft()) {
@@ -69,6 +69,20 @@ export class CreateDoctor {
     }
 
     const doctor = doctorOrError.value
+
+    const crmExists = await this.doctorRepository.exists(doctor.crm.value)
+
+    if (crmExists) {
+      return left(new CrmAlreadyExistError(doctor.crm.value))
+    }
+
+    const emailExist = await this.doctorRepository.exists(doctor.email.value)
+
+    if (emailExist) {
+      return left(new EmailAlreadyExistError(doctor.email.value))
+    }
+
+    await this.doctorRepository.create(doctor)
 
     return right(doctor)
   }

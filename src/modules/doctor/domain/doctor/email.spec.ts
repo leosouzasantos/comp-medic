@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { Email } from './doctor/email'
+import { Email } from './email'
 
 describe('Doctor email value object', () => {
   it('should accept valid email address', () => {

@@ -20,7 +20,7 @@ export class Doctor extends DoctorEntity<IDoctorProps> {
   }
 
   get email() {
-    return this.props.crm
+    return this.props.email
   }
 
   get userId() {

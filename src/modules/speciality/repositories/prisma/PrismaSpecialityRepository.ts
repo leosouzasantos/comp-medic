@@ -23,4 +23,13 @@ export class PrismaSpeciality implements ISpecialityRepository {
 
     return !!specialityExists
   }
+
+  async findById(id: string): Promise<Speciality | undefined> {
+    const speciality = await prisma.speciality.findUnique({ where: { id } })
+
+    if (!speciality) {
+      throw new Error('Error when searching for speciality id')
+    }
+    return SpecialityMapper.toDomain(speciality)
+  }
 }
