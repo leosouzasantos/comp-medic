@@ -1,5 +1,10 @@
-import { Either } from '../../../../core/logic/Either'
+import { Either, left, right } from '../../../../core/logic/Either'
 import { DoctorEntity } from '../../entities/DoctorEntity'
+import { compareEndTimeAfter, validateTime } from './date'
+import { CompareTimeError } from './errors/CompareTimeError'
+import { InvalidDateError } from './errors/InvalidDateError'
+
+import { InvalidDurationError } from './errors/InvalidDurationError'
 
 interface IDoctorInfoProps {
   startAt: string
@@ -29,7 +34,24 @@ export class DoctorInfo extends DoctorEntity<IDoctorInfoProps> {
 
   private constructor(props: IDoctorInfoProps, id?: string) {
     super(props, id)
+    if (props.duration <= 0) {
+      left(new InvalidDurationError(props.duration))
+    }
+
+    if (!validateTime(props.startAt) || !validateTime(props.endAt)) {
+      left(new InvalidDateError())
+    }
+
+    if (compareEndTimeAfter(props.startAt, props.endAt)) {
+      left(new CompareTimeError())
+    }
   }
 
-  //static create(props: IDoctorInfoProps, id?: string)
+  static create(
+    props: IDoctorInfoProps,
+    id?: string
+  ): Either<InvalidDateError | InvalidDurationError, DoctorInfo> {
+    const doctorInfo = new DoctorInfo(props, id)
+    return right(doctorInfo)
+  }
 }
