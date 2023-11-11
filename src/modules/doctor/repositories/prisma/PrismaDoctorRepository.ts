@@ -12,6 +12,18 @@ export class PrismaDoctorRepository implements IDoctorRepository {
     }
     return DoctorMapper.toDomain(doctor)
   }
+
+  async findByUserId(userId: string): Promise<Doctor | undefined> {
+    const doctor = await prisma.doctor.findUnique({
+      where: { user_id: userId },
+    })
+
+    if (!doctor) {
+      throw new Error('Error when fetching Doctor object')
+    }
+    return DoctorMapper.toDomain(doctor)
+  }
+
   async exists(email: string): Promise<boolean> {
     const doctorExists = await prisma.doctor.findUnique({ where: { email } })
     return !!doctorExists

@@ -12,6 +12,10 @@ export class InMemoryDoctorRepository implements IDoctorRepository {
     return this.items.find((doctor) => doctor.crm.value === crm)
   }
 
+  async findByUserId(userId: string): Promise<Doctor | undefined> {
+    return this.items.find((doctor) => doctor.userId === userId)
+  }
+
   async findById(id: string): Promise<Doctor | undefined> {
     return this.items.find((doctor) => doctor.id === id)
   }

@@ -4,5 +4,6 @@ export interface IDoctorRepository {
   create(doctor: Doctor): Promise<void>
   findByCRM(crm: string): Promise<Doctor | undefined>
   findById(id: string): Promise<Doctor | undefined>
+  findByUserId(userId: string): Promise<Doctor | undefined>
   exists(email: string): Promise<boolean>
 }

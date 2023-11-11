@@ -19,13 +19,9 @@ let userRepository: InMemoryUserRepository
 let doctorRepository: InMemoryDoctorRepository
 let createDoctor: CreateDoctor
 
-console.log('Before Crm Creation:', '654321')
 const crm = Crm.create('654321').value as Crm
-console.log('After Crm Creation:', crm)
 
-console.log('Before Email Creation:', 'JohnDoe@example.com')
 const email = Email.create('JohnDoe@example.com').value as Email
-console.log('After Email Creation:', email)
 
 describe('Create Doctor', () => {
   beforeEach(async () => {

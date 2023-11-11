@@ -11,8 +11,9 @@ import { CrmAlreadyExistError } from './errors/CrmAlreadyExistsError'
 import { EmailAlreadyExistError } from './errors/EmailAlreadyExistsError'
 import { InvalidSpecialityError } from './errors/InvalidSpecialityError'
 import { InvalidUserError } from './errors/InvalidUserError'
+import { UserAlreadyRegisteredError } from './errors/UserAlreadyRegisteredError'
 
-export type DoctorRequest = {
+type DoctorRequest = {
   crm: string
   email: string
   userId: string
@@ -55,6 +56,12 @@ export class CreateDoctor {
 
     if (!user) {
       return left(new InvalidUserError())
+    }
+
+    const existingDoctor = await this.doctorRepository.findByUserId(userId)
+
+    if (existingDoctor) {
+      return left(new UserAlreadyRegisteredError())
     }
 
     const doctorOrError = Doctor.create({
