@@ -58,12 +58,6 @@ export class CreateDoctor {
       return left(new InvalidUserError())
     }
 
-    const existingDoctor = await this.doctorRepository.findByUserId(userId)
-
-    if (existingDoctor) {
-      return left(new UserAlreadyRegisteredError())
-    }
-
     const doctorOrError = Doctor.create({
       crm: crmOrError.value,
       email: emailOrError.value,

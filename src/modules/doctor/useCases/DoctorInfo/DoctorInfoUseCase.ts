@@ -2,36 +2,43 @@ import { Either, left, right } from '../../../../core/logic/Either'
 import { IDoctorRepository } from '../../repositories/IDoctorRepository'
 import { InvalidDoctorError } from './errors/InvalidDoctorError'
 import { DoctorInfo } from '../../domain/doctorInfo/doctorInfo'
+import { IDoctorInfoRepository } from '../../repositories/IDoctorInfoRepository'
 
 type DoctorInfoRequest = {
-  doctorId: string
   startAt: string
   endAt: string
   price: number
   duration: number
+  doctorId: string
 }
 
 type DoctorInfoResponse = Either<InvalidDoctorError, DoctorInfo>
 
 export class DoctorInfoUseCase {
-  constructor(private doctorRepository: IDoctorRepository) {}
+  constructor(
+    private doctorRepository: IDoctorRepository,
+    private doctorInfoRepository: IDoctorInfoRepository
+  ) {}
 
-  async execute(
-    { doctorId, startAt, endAt, price, duration }: DoctorInfoRequest,
-    userId: string
-  ): Promise<DoctorInfoResponse> {
-    const doctorByUserId = await this.doctorRepository.findByUserId(userId)
+  async execute({
+    startAt,
+    endAt,
+    price,
+    duration,
+    doctorId,
+  }: DoctorInfoRequest): Promise<DoctorInfoResponse> {
+    const doctorByUserId = await this.doctorRepository.findById(doctorId)
 
     if (!doctorByUserId) {
-      left(new InvalidDoctorError(userId))
+      return left(new InvalidDoctorError(doctorId))
     }
 
     const doctorOrError = DoctorInfo.create({
-      doctorId,
       startAt,
       endAt,
       price,
       duration,
+      doctorId,
     })
 
     if (doctorOrError.isLeft()) {
@@ -39,6 +46,8 @@ export class DoctorInfoUseCase {
     }
 
     const doctorInfo = doctorOrError.value
+
+    await this.doctorInfoRepository.createOrUpdate(doctorInfo)
 
     return right(doctorInfo)
   }

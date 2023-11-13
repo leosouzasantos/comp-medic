@@ -1,5 +1,6 @@
+import { Entity } from '../../../../core/domain/Entity'
 import { Either, left, right } from '../../../../core/logic/Either'
-import { DoctorEntity } from '../../entities/DoctorEntity'
+
 import { compareEndTimeAfter, validateTime } from './date'
 import { CompareTimeError } from './errors/CompareTimeError'
 import { InvalidDateError } from './errors/InvalidDateError'
@@ -14,7 +15,7 @@ interface IDoctorInfoProps {
   doctorId: string
 }
 
-export class DoctorInfo extends DoctorEntity<IDoctorInfoProps> {
+export class DoctorInfo extends Entity<IDoctorInfoProps> {
   get startAt() {
     return this.props.startAt
   }

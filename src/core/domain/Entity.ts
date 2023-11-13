@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto'
 
-export abstract class DoctorEntity<T> {
+export abstract class Entity<T> {
   protected readonly _id: string
   public readonly props: T
 
@@ -13,7 +13,7 @@ export abstract class DoctorEntity<T> {
     this.props = props
   }
 
-  public equals(object?: DoctorEntity<T>): boolean {
+  public equals(object?: Entity<T>): boolean {
     if (object === null || object === undefined) {
       return false
     }
@@ -22,7 +22,7 @@ export abstract class DoctorEntity<T> {
       return true
     }
 
-    if (!(object instanceof DoctorEntity)) {
+    if (!(object instanceof Entity)) {
       return false
     }
 
