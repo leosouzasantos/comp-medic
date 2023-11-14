@@ -5,6 +5,7 @@ import { userRouter } from './userRoutes'
 import { specialityRouter } from './specialityRoutes'
 import { doctorRouter } from './doctorRoutes'
 import { doctorInfoRouter } from './doctorInfoRouter'
+import { patientRouter } from './PatientRouter'
 
 const router = Router()
 
@@ -13,5 +14,6 @@ router.use('/sessions', sessionsRouter)
 router.use('/specialities', specialityRouter)
 router.use('/doctor', doctorRouter)
 router.use('/info', doctorInfoRouter)
+router.use('/patient', patientRouter)
 
 export { router }
