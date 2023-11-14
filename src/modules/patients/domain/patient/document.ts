@@ -1,4 +1,4 @@
-import { Either, left, right } from '../../../core/logic/Either'
+import { Either, left, right } from '../../../../core/logic/Either'
 import { InvalidDocumentError } from './errors/InvalidDocumentError'
 
 export class Document {

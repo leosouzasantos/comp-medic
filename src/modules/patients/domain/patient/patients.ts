@@ -1,5 +1,6 @@
-import { Entity } from '../../../core/domain/Entity'
-import { Either, right } from '../../../core/logic/Either'
+import { Entity } from '../../../../core/domain/Entity'
+import { Either, right } from '../../../../core/logic/Either'
+import { Document } from './document'
 import { Email } from './email'
 import { InvalidDocumentError } from './errors/InvalidDocumentError'
 import { InvalidEmailError } from './errors/InvalidEmailError'
@@ -18,7 +19,7 @@ export class Patient extends Entity<IPatientsProps> {
   }
 
   get document() {
-    return this.props.email
+    return this.props.document
   }
 
   get userId() {

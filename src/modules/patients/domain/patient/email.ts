@@ -1,4 +1,4 @@
-import { Either, left, right } from '../../../core/logic/Either'
+import { Either, left, right } from '../../../../core/logic/Either'
 import { InvalidEmailError } from './errors/InvalidEmailError'
 
 export class Email {
