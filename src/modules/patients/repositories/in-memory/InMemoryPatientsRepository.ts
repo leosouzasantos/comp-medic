@@ -9,6 +9,9 @@ export class InMemoryPatientsRepository implements IPatientsRepository {
   async findByEmail(email: string): Promise<Patient | undefined> {
     return this.items.find((patient) => patient.email.value === email)
   }
+  async findByDocument(document: string): Promise<Patient | undefined> {
+    return this.items.find((patient) => patient.document.value === document)
+  }
   async exists(email: string): Promise<boolean> {
     return this.items.some((patient) => patient.email.value === email)
   }

@@ -9,6 +9,16 @@ export class PrismaPatientsRepository implements IPatientsRepository {
 
     await prisma.patient.create({ data })
   }
+  async findByDocument(document: string): Promise<Patient | undefined> {
+    const patient = await prisma.patient.findUnique({
+      where: { document },
+    })
+
+    if (!patient) {
+      return undefined
+    }
+    return PatientMapper.toDomain(patient)
+  }
   async findByEmail(email: string): Promise<Patient | undefined> {
     const patient = await prisma.patient.findUnique({
       where: { email },

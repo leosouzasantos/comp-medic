@@ -11,7 +11,6 @@ import { CrmAlreadyExistError } from './errors/CrmAlreadyExistsError'
 import { EmailAlreadyExistError } from './errors/EmailAlreadyExistsError'
 import { InvalidSpecialityError } from './errors/InvalidSpecialityError'
 import { InvalidUserError } from './errors/InvalidUserError'
-import { UserAlreadyRegisteredError } from './errors/UserAlreadyRegisteredError'
 
 type DoctorRequest = {
   crm: string
