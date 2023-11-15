@@ -29,6 +29,17 @@ export class PrismaPatientsRepository implements IPatientsRepository {
     }
     return PatientMapper.toDomain(patient)
   }
+
+  async findById(id: string): Promise<Patient | undefined> {
+    const patient = await prisma.patient.findUnique({
+      where: { id },
+    })
+
+    if (!patient) {
+      throw new Error('Error when fetching Patient object')
+    }
+    return PatientMapper.toDomain(patient)
+  }
   async exists(email: string): Promise<boolean> {
     const patientExists = await prisma.patient.findUnique({
       where: { email },
