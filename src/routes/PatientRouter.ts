@@ -7,6 +7,7 @@ import { makeEnsureAuthenticatedMiddleware } from '../infra/http/factories/Middl
 const patientRouter = express.Router()
 
 patientRouter.use(adaptMiddleware(makeEnsureAuthenticatedMiddleware()))
+
 patientRouter.post('/', adaptRoute(MakeCreatePatientController()))
 
 export { patientRouter }
