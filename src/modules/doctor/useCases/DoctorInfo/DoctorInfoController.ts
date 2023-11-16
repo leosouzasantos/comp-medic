@@ -8,8 +8,6 @@ import {
 import { DoctorInfoUseCase } from './DoctorInfoUseCase'
 
 type DoctorControllerRequest = {
-  startAt: string
-  endAt: string
   price: number
   duration: number
   doctorId: string
@@ -19,16 +17,12 @@ export class DoctorInfoController implements Controller {
   constructor(private DoctorInfo: DoctorInfoUseCase) {}
 
   async handle({
-    startAt,
-    endAt,
     price,
     duration,
     doctorId,
   }: DoctorControllerRequest): Promise<HttpResponse> {
     try {
       const result = await this.DoctorInfo.execute({
-        startAt,
-        endAt,
         price,
         duration,
         doctorId,

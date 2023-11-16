@@ -5,8 +5,6 @@ import { DoctorInfo } from '../../domain/doctorInfo/doctorInfo'
 import { IDoctorInfoRepository } from '../../repositories/IDoctorInfoRepository'
 
 type DoctorInfoRequest = {
-  startAt: string
-  endAt: string
   price: number
   duration: number
   doctorId: string
@@ -21,21 +19,17 @@ export class DoctorInfoUseCase {
   ) {}
 
   async execute({
-    startAt,
-    endAt,
     price,
     duration,
     doctorId,
   }: DoctorInfoRequest): Promise<DoctorInfoResponse> {
-    const doctorByUserId = await this.doctorRepository.findById(doctorId)
+    const doctorById = await this.doctorRepository.findById(doctorId)
 
-    if (!doctorByUserId) {
+    if (!doctorById) {
       return left(new InvalidDoctorError(doctorId))
     }
 
     const doctorOrError = DoctorInfo.create({
-      startAt,
-      endAt,
       price,
       duration,
       doctorId,

@@ -11,16 +11,12 @@ export class PrismaDoctorInfoRepository implements IDoctorInfoRepository {
       where: { doctor_id: data.doctorId },
       create: {
         duration: data.duration,
-        end_at: data.endAt,
-        start_at: data.startAt,
         price: data.price,
         id: data.id,
         doctor_id: data.doctorId,
       },
       update: {
         duration: data.duration,
-        end_at: data.endAt,
-        start_at: data.startAt,
         price: data.price,
       },
     })

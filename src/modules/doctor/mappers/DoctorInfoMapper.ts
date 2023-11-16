@@ -6,8 +6,6 @@ export class DoctorInfoMapper {
     const doctorOrError = DoctorInfo.create(
       {
         doctorId: raw.doctor_id,
-        startAt: raw.start_at,
-        endAt: raw.end_at,
         duration: raw.duration,
         price: Number(raw.price),
       },
@@ -23,8 +21,6 @@ export class DoctorInfoMapper {
   static toPersistence(doctorInfo: DoctorInfo) {
     return {
       id: doctorInfo.id,
-      startAt: doctorInfo.startAt,
-      endAt: doctorInfo.endAt,
       duration: doctorInfo.duration,
       price: doctorInfo.price,
       doctorId: doctorInfo.doctorId,
