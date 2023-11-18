@@ -1,5 +1,21 @@
-import { DoctorSchedules as PersistenceDoctorSchedule } from '@prisma/client'
+import {
+  Doctor,
+  DoctorInfo,
+  DoctorSchedules as PersistenceDoctorSchedule,
+} from '@prisma/client'
 import { DoctorSchedule } from '../domain/doctorSchedule/doctorSchedule'
+
+export type DoctorScheduleWeek = {
+  startAt: string
+  endAt: string
+  dayOfWeek: number
+  doctorId: string
+  doctor: {
+    DoctorInfo: {
+      duration: number
+    }
+  }
+}
 
 export class DoctorScheduleMapper {
   static toDomain(raw: PersistenceDoctorSchedule): DoctorSchedule {
@@ -26,6 +42,23 @@ export class DoctorScheduleMapper {
       endAt: doctorSchedule.endAt,
       doctorId: doctorSchedule.doctorId,
       dayOfWeek: doctorSchedule.dayOfWeek,
+    }
+  }
+  static prismaToEntity = (
+    schedule: PersistenceDoctorSchedule & {
+      doctor: Doctor & { doctorInfo: DoctorInfo | null }
+    }
+  ): DoctorScheduleWeek => {
+    return {
+      doctorId: schedule.doctor_id,
+      startAt: schedule.start_at,
+      endAt: schedule.end_at,
+      dayOfWeek: schedule.day_of_week,
+      doctor: {
+        DoctorInfo: {
+          duration: schedule.doctor.doctorInfo?.duration || 0,
+        },
+      },
     }
   }
 }

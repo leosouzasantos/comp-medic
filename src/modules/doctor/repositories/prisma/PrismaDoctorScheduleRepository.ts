@@ -1,6 +1,9 @@
 import { prisma } from '../../../../infra/prisma/client'
 import { DoctorSchedule } from '../../domain/doctorSchedule/doctorSchedule'
-import { DoctorScheduleMapper } from '../../mappers/DoctorSchedulesMapper'
+import {
+  DoctorScheduleMapper,
+  DoctorScheduleWeek,
+} from '../../mappers/DoctorSchedulesMapper'
 import { IDoctorScheduleRepository } from '../IDoctorScheduleRepository'
 
 export class PrismaDoctorScheduleRepository
@@ -9,13 +12,47 @@ export class PrismaDoctorScheduleRepository
   async create(doctorSchedule: DoctorSchedule): Promise<void> {
     const data = DoctorScheduleMapper.toPersistence(doctorSchedule)
 
-    await prisma.doctorSchedules.create({
-      data: {
-        doctor_id: data.doctorId,
-        start_at: data.startAt,
-        end_at: data.endAt,
-        day_of_week: data.dayOfWeek,
+    await prisma.$transaction([
+      prisma.doctorSchedules.deleteMany({
+        where: {
+          doctor_id: data.doctorId,
+        },
+      }),
+      prisma.doctorSchedules.create({
+        data: {
+          doctor_id: data.doctorId,
+          start_at: data.startAt,
+          end_at: data.endAt,
+          day_of_week: data.dayOfWeek,
+        },
+      }),
+    ])
+  }
+
+  async findByDoctorIdAndDayOfWeek(
+    doctorId: string,
+    dayOfWeek: number
+  ): Promise<DoctorScheduleWeek | null> {
+    const result = await prisma.doctorSchedules.findFirst({
+      where: {
+        day_of_week: dayOfWeek,
+        AND: {
+          doctor_id: doctorId,
+        },
+      },
+      include: {
+        doctor: {
+          include: {
+            doctorInfo: true,
+          },
+        },
       },
     })
+    console.log({ result })
+
+    if (result) {
+      DoctorScheduleMapper.prismaToEntity(result)
+    }
+    return null
   }
 }

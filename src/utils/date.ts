@@ -15,6 +15,14 @@ export function compareEndTimeAfter(startTime: string, endTime: string) {
   return formatDateHour(endTime).isAfter(formatDateHour(startTime))
 }
 
-export function getDayOfWeek(date: Date) {
+export function getDayOfWeek(date: string) {
   return dayjs(date).day()
+}
+
+export function formatDate(date: Date, format: string) {
+  return dayjs(date).format(format)
+}
+
+export function dateToString(date: Date) {
+  return dayjs(date).format('YYYY-MM-DD').toString()
 }
