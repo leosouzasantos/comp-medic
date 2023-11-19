@@ -44,6 +44,7 @@ export class DoctorScheduleMapper {
       dayOfWeek: doctorSchedule.dayOfWeek,
     }
   }
+
   static prismaToEntity = (
     schedule: PersistenceDoctorSchedule & {
       doctor: Doctor & { doctorInfo: DoctorInfo | null }

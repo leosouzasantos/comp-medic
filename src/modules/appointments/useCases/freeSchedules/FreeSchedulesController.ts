@@ -28,7 +28,9 @@ export class FreeScheduleController implements Controller {
         const error = result.value
         return clientError(error)
       } else {
-        return ok(result)
+        const message = result.value
+
+        return ok({ message })
       }
     } catch (err: any) {
       return fail(err)

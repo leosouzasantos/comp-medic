@@ -31,14 +31,17 @@ export class FreeSchedules {
     doctorId,
     date,
   }: FreeScheduleRequest): Promise<
-    Either<DoctorNotAvailableError, FreeScheduleResponse>
+    Either<
+      DoctorNotAvailableError | InvalidDoctorError | InvalidDateError,
+      FreeScheduleResponse
+    >
   > {
     if (!doctorId) {
-      left(new InvalidDoctorError())
+      return left(new InvalidDoctorError())
     }
 
     if (!date) {
-      left(new InvalidDateError())
+      return left(new InvalidDateError())
     }
 
     const dayOfWeek = getDayOfWeek(date)
@@ -53,7 +56,7 @@ export class FreeSchedules {
       return left(new DoctorNotAvailableError())
     }
 
-    const result =
+    const appointmentsByDoctorAndDate =
       await this.appointmentsRepository.findAllSchedulesByDoctorAndDate(
         doctorId,
         date
@@ -66,11 +69,13 @@ export class FreeSchedules {
     let timeNow = startAt
     const freeTime: FreeTime[] = []
 
-    while (startAt <= endAt) {
-      const existsAppointment = result.find((appointment) => {
-        const appointmentDateFormat = formatDate(appointment.date, 'HH:mm')
-        return appointmentDateFormat === timeNow
-      })
+    while (timeNow <= endAt) {
+      const existsAppointment = appointmentsByDoctorAndDate.find(
+        (appointment) => {
+          const appointmentDateFormat = formatDate(appointment.date, 'HH:mm')
+          return appointmentDateFormat === timeNow
+        }
+      )
 
       if (!existsAppointment) {
         freeTime.push({
@@ -82,11 +87,6 @@ export class FreeSchedules {
         .format('HH:mm')
     }
 
-    const response: FreeScheduleResponse = {
-      doctorId: doctorId,
-      freeTime,
-    }
-
-    return right(response)
+    return right({ doctorId: doctorId, freeTime })
   }
 }

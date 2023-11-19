@@ -35,9 +35,9 @@ export class PrismaDoctorScheduleRepository
   ): Promise<DoctorScheduleWeek | null> {
     const result = await prisma.doctorSchedules.findFirst({
       where: {
-        day_of_week: dayOfWeek,
+        doctor_id: doctorId,
         AND: {
-          doctor_id: doctorId,
+          day_of_week: dayOfWeek,
         },
       },
       include: {
@@ -48,11 +48,9 @@ export class PrismaDoctorScheduleRepository
         },
       },
     })
-    console.log({ result })
 
-    if (result) {
-      DoctorScheduleMapper.prismaToEntity(result)
-    }
+    if (result) return DoctorScheduleMapper.prismaToEntity(result)
+
     return null
   }
 }
