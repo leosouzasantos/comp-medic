@@ -1,5 +1,10 @@
 import { Either, left, right } from '../../../../core/logic/Either'
-import { dateToString, formatDate, getDayOfWeek } from '../../../../utils/date'
+import {
+  dateToString,
+  formatDateUTC,
+  getDayOfWeek,
+  toDate,
+} from '../../../../utils/date'
 import { IDoctorRepository } from '../../../doctor/repositories/IDoctorRepository'
 import { IDoctorScheduleRepository } from '../../../doctor/repositories/IDoctorScheduleRepository'
 import { IPatientsRepository } from '../../../patients/repositories/IPatientsRepository'
@@ -15,6 +20,7 @@ type AppointmentRequest = {
   doctorId: string
   date: Date
   isFinished: boolean
+  note: string
 }
 
 type AppointmentsResponse = Either<
@@ -38,6 +44,7 @@ export class AppointmentsUseCase {
     doctorId,
     date,
     isFinished,
+    note,
   }: AppointmentRequest): Promise<AppointmentsResponse> {
     const doctorExists = this.doctorRepository.findById(doctorId)
 
@@ -63,7 +70,7 @@ export class AppointmentsUseCase {
       return left(new DoctorNotAvailableError())
     }
 
-    const dateFormat = formatDate(date, 'YYYY:MM:DD HH:mm')
+    const dateFormat = formatDateUTC(date, 'YYYY:MM:DD HH:mm')
 
     const existsAppointmentDoctor =
       await this.appointmentRepository.findAppointmentByDoctorAndDatetime(
@@ -86,10 +93,11 @@ export class AppointmentsUseCase {
     }
 
     const appointmentOrError = Appointments.create({
-      date: date,
+      date: toDate(date),
       doctorId,
       patientId,
       isFinished,
+      note,
     })
 
     const appointment = appointmentOrError

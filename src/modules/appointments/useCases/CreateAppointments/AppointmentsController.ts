@@ -12,6 +12,7 @@ type AppointmentControllerRequest = {
   doctorId: string
   date: Date
   isFinished: boolean
+  note: string
 }
 
 export class AppointmentController implements Controller {
@@ -22,6 +23,7 @@ export class AppointmentController implements Controller {
     doctorId,
     date,
     isFinished,
+    note,
   }: AppointmentControllerRequest): Promise<HttpResponse> {
     try {
       const result = await this.appointment.execute({
@@ -29,6 +31,7 @@ export class AppointmentController implements Controller {
         patientId,
         isFinished,
         date,
+        note,
       })
       if (result.isLeft()) {
         const error = result.value

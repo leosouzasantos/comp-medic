@@ -12,19 +12,21 @@ export class PrismaAppointmentsRepository implements IAppointmentsRepository {
     doctorId: string,
     date: string
   ): Promise<AppointmentsDate | null> {
-    return await prisma.$queryRaw`
+    const result: AppointmentsDate[] = await prisma.$queryRaw`
       SELECT ap.date from appointments ap where to_char(ap.date, 'YYYY-MM-DD HH24:MI') = ${date}
-      and doctor_id = ${doctorId}
+      and doctor_id = ${doctorId} limit 1
   `
+    return result[0]
   }
   async findAppointmentByPatientAndDatetime(
     patientId: string,
     date: string
   ): Promise<AppointmentsDate> {
-    return await prisma.$queryRaw`
+    const result: AppointmentsDate[] = await prisma.$queryRaw`
       SELECT ap.date from appointments ap where to_char(ap.date, 'YYYY-MM-DD HH24:MI') = ${date}
-      and patient_id = ${patientId}
+      and patient_id = ${patientId} limit 1
   `
+    return result[0]
   }
   async findAllSchedulesByDoctorAndDate(
     doctorId: string,
@@ -45,6 +47,7 @@ export class PrismaAppointmentsRepository implements IAppointmentsRepository {
         patient_id: data.patient_Id,
         is_finished: data.is_Finished,
         date: data.date,
+        note: data.note,
       },
     })
   }
