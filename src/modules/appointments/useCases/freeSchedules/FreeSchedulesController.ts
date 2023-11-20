@@ -13,14 +13,14 @@ type FreeSchedulesControllerRequest = {
 }
 
 export class FreeScheduleController implements Controller {
-  constructor(private FreeSchedule: FreeSchedules) {}
+  constructor(private freeSchedule: FreeSchedules) {}
 
   async handle({
     doctorId,
     date,
   }: FreeSchedulesControllerRequest): Promise<HttpResponse> {
     try {
-      const result = await this.FreeSchedule.execute({
+      const result = await this.freeSchedule.execute({
         doctorId,
         date,
       })

@@ -1,16 +1,25 @@
 import { prisma } from '../../../../infra/prisma/client'
 import { Doctor } from '../../domain/doctor/doctor'
+import { DoctorWithUserDTO } from '../../dtos/DoctorDTO'
 import { DoctorMapper } from '../../mappers/DoctorMapper'
 import { IDoctorRepository } from '../IDoctorRepository'
 
 export class PrismaDoctorRepository implements IDoctorRepository {
-  async findById(id: string): Promise<Doctor | undefined> {
-    const doctor = await prisma.doctor.findUnique({ where: { id } })
+  async findById(id: string): Promise<DoctorWithUserDTO | null> {
+    const doctor = await prisma.doctor.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        user: true,
+      },
+    })
 
-    if (!doctor) {
-      throw new Error('Error when fetching Doctor object')
+    if (doctor) {
+      return DoctorMapper.toDto(doctor)
     }
-    return DoctorMapper.toDomain(doctor)
+
+    return null
   }
 
   async findByUserId(userId: string): Promise<Doctor | undefined> {

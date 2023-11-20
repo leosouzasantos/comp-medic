@@ -1,9 +1,8 @@
 import 'dotenv/config'
 import express from 'express'
 import swaggerUI from 'swagger-ui-express'
-import swaggerDocument from '../swagger.json'
-
-import { router } from '../src/routes/index'
+import swaggerDocument from '../../../swagger.json'
+import { router } from './routes/index'
 
 const app = express()
 

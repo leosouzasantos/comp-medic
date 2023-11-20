@@ -7,7 +7,7 @@ import {
   ok,
 } from '../../../core/infra/HttpResponse'
 import { Middleware } from '../../../core/infra/Middleware'
-import { AccessDeniedError } from '../../errors/AcessDeniedError'
+import { AccessDeniedError } from '../errors/AcessDeniedError'
 
 type EnsureAuthenticateMiddlewareRequest = {
   accessToken: string

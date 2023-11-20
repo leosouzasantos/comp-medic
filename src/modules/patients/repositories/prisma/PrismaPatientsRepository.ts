@@ -30,7 +30,7 @@ export class PrismaPatientsRepository implements IPatientsRepository {
     return PatientMapper.toDomain(patient)
   }
 
-  async findById(id: string): Promise<Patient | undefined> {
+  async findById(id: string): Promise<Patient> {
     const patient = await prisma.patient.findUnique({
       where: { id },
     })
