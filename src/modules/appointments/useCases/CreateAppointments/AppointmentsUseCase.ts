@@ -106,12 +106,15 @@ export class AppointmentsUseCase {
 
     await this.appointmentRepository.create(appointment)
     await this.mailProvider.sendEmail({
-      to: patientExists.email.value,
+      to: patientExists.email,
       from: 'Appointment scheduling <noreplay@compmedic.com',
       text: `
-            Hello ${patientExists.email.value}! <br/>
-            would like to confirm the <b>appointment scheduling</b> for the day ${date}
-            with the doctor ${doctorExists.email}`,
+            Hello ${patientExists.user.name}! <br/>
+            would like to confirm the <b>appointment scheduling</b> for the day ${formatDateUTC(
+              date,
+              'YYYY/MM/DD HH:mm'
+            )}
+            with the doctor ${doctorExists.user.name}`,
       subject: 'Appointment scheduling',
     })
 

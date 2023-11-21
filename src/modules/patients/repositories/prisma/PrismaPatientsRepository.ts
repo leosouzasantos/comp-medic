@@ -1,5 +1,6 @@
 import { prisma } from '../../../../infra/prisma/client'
 import { Patient } from '../../domain/patient/patients'
+import { PatientWithUserDTO } from '../../dtos/patientDTO'
 import { PatientMapper } from '../../mappers/PatientMapper'
 import { IPatientsRepository } from '../IPatientsRepository'
 
@@ -30,15 +31,20 @@ export class PrismaPatientsRepository implements IPatientsRepository {
     return PatientMapper.toDomain(patient)
   }
 
-  async findById(id: string): Promise<Patient> {
+  async findById(id: string): Promise<PatientWithUserDTO> {
     const patient = await prisma.patient.findUnique({
-      where: { id },
+      where: {
+        id,
+      },
+      include: {
+        user: true,
+      },
     })
 
     if (!patient) {
       throw new Error('Error when fetching Patient object')
     }
-    return PatientMapper.toDomain(patient)
+    return PatientMapper.toDto(patient)
   }
   async exists(email: string): Promise<boolean> {
     const patientExists = await prisma.patient.findUnique({

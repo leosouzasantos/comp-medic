@@ -1,7 +1,11 @@
-import { Patient as PersistencePatient } from '@prisma/client'
+import {
+  Patient as PersistencePatient,
+  User as PersistenceUser,
+} from '@prisma/client'
 import { Email } from '../domain/patient/email'
 import { Document } from '../domain/patient/document'
 import { Patient } from '../domain/patient/patients'
+import { PatientWithUserDTO } from '../dtos/patientDTO'
 
 export class PatientMapper {
   static toDomain(raw: PersistencePatient): Patient {
@@ -38,6 +42,20 @@ export class PatientMapper {
       email: patient.email.value,
       document: patient.document.value,
       user_id: patient.userId,
+    }
+  }
+
+  static toDto = (
+    data: PersistencePatient & { user: PersistenceUser }
+  ): PatientWithUserDTO => {
+    return {
+      id: data.id,
+      email: data.email,
+      document: data.document,
+      userId: data.user_id,
+      user: {
+        name: data.user.name,
+      },
     }
   }
 }
