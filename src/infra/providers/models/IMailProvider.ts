@@ -1,13 +1,9 @@
-export interface MailAddress {
-  name: string
-  email: string
-}
-
 export interface MailMessage {
-  from: MailAddress
-  to: MailAddress
+  from: string
+  to: string
+  text?: string
+  html?: string
   subject: string
-  body: string
 }
 
 export interface IMailProvider {

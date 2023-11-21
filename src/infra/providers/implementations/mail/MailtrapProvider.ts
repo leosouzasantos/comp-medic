@@ -8,30 +8,25 @@ export class MailtrapProvider implements IMailProvider {
     nodemailer
       .createTestAccount()
       .then(() => {
-        const transport = nodemailer.createTransport({
-          host: 'sandbox.smtp.mailtrap.io',
-          port: 2525,
+        const transporter = nodemailer.createTransport({
+          host: 'smtp.ethereal.email',
+          port: 587,
           auth: {
             user: process.env.MAILTRAP_USER,
             pass: process.env.MAILTRAP_PASS,
           },
         })
-        this.transporter = transport
+        this.transporter = transporter
       })
       .catch((err) => console.log(err))
   }
   async sendEmail(message: MailMessage): Promise<void> {
     const resultMail = await this.transporter.sendMail({
-      from: {
-        name: message.from.name,
-        address: message.from.email,
-      },
-      to: {
-        name: message.to.name,
-        address: message.to.email,
-      },
+      to: message.to,
+      from: message.from,
       subject: message.subject,
-      html: message.body,
+      text: message.text,
+      html: message.html,
     })
 
     console.log('Message sent: %s', resultMail.messageId)

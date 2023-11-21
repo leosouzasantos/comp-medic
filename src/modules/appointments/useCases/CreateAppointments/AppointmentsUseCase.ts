@@ -1,4 +1,5 @@
 import { Either, left, right } from '../../../../core/logic/Either'
+import { IMailProvider } from '../../../../infra/providers/models/IMailProvider'
 import {
   dateToString,
   formatDateUTC,
@@ -36,7 +37,8 @@ export class AppointmentsUseCase {
     private patientRepository: IPatientsRepository,
     private doctorRepository: IDoctorRepository,
     private doctorScheduleRepository: IDoctorScheduleRepository,
-    private appointmentRepository: IAppointmentsRepository
+    private appointmentRepository: IAppointmentsRepository,
+    private mailProvider: IMailProvider
   ) {}
 
   async execute({
@@ -46,13 +48,13 @@ export class AppointmentsUseCase {
     isFinished,
     note,
   }: AppointmentRequest): Promise<AppointmentsResponse> {
-    const doctorExists = this.doctorRepository.findById(doctorId)
+    const doctorExists = await this.doctorRepository.findById(doctorId)
 
     if (!doctorExists) {
       return left(new InvalidDoctorError())
     }
 
-    const patientExists = this.patientRepository.findById(patientId)
+    const patientExists = await this.patientRepository.findById(patientId)
 
     if (!patientExists) {
       return left(new InvalidPatientError())
@@ -74,7 +76,7 @@ export class AppointmentsUseCase {
 
     const existsAppointmentDoctor =
       await this.appointmentRepository.findAppointmentByDoctorAndDatetime(
-        doctorId,
+        doctorExists.id,
         dateFormat
       )
 
@@ -84,7 +86,7 @@ export class AppointmentsUseCase {
 
     const existsAppointmentPatient =
       await this.appointmentRepository.findAppointmentByPatientAndDatetime(
-        patientId,
+        patientExists.id,
         dateFormat
       )
 
@@ -103,6 +105,15 @@ export class AppointmentsUseCase {
     const appointment = appointmentOrError
 
     await this.appointmentRepository.create(appointment)
+    await this.mailProvider.sendEmail({
+      to: patientExists.email.value,
+      from: 'Appointment scheduling <noreplay@compmedic.com',
+      text: `
+            Hello ${patientExists.email.value}! <br/>
+            would like to confirm the <b>appointment scheduling</b> for the day ${date}
+            with the doctor ${doctorExists.email}`,
+      subject: 'Appointment scheduling',
+    })
 
     return right(appointment)
   }
