@@ -1,9 +1,10 @@
 import { prisma } from '../../../../infra/prisma/client'
+import { endOfDay, startOfDay } from '../../../../utils/date'
 import { Appointments } from '../../domain/appointments/appointments'
 import { AppointmentMapper } from '../../mappers/AppointmentsMapper'
 import {
-  AppointmentDTO,
   AppointmentsDate,
+  AppointmentsWithPatient,
   IAppointmentsRepository,
 } from '../IAppointmentsRepository'
 
@@ -36,6 +37,22 @@ export class PrismaAppointmentsRepository implements IAppointmentsRepository {
       SELECT ap.date from appointments ap where to_char(ap.date, 'YYYY-MM-DD') = ${date}
       and doctor_id = ${doctorId}
     `
+  }
+
+  async findAllTodayIncludePatients(): Promise<AppointmentsWithPatient[]> {
+    const result = await prisma.appointment.findMany({
+      where: {
+        date: {
+          gte: startOfDay(),
+          lte: endOfDay(),
+        },
+      },
+      include: {
+        patient: true,
+      },
+    })
+
+    return result
   }
 
   async create(appointment: Appointments): Promise<void> {

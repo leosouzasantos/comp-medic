@@ -4,8 +4,11 @@ export type AppointmentsDate = {
   date: Date
 }
 
-export type AppointmentDTO = {
-  date: string
+export type AppointmentsWithPatient = {
+  date: Date
+  patient: {
+    email: string
+  }
 }
 
 export interface IAppointmentsRepository {
@@ -25,4 +28,6 @@ export interface IAppointmentsRepository {
     patientId: string,
     date: string
   ): Promise<AppointmentsDate>
+
+  findAllTodayIncludePatients(): Promise<AppointmentsWithPatient[]>
 }
