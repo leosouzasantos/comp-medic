@@ -4,6 +4,7 @@ import { JWT } from '../../domain/user/jwt'
 
 import { IUserRepository } from '../../repositories/IUserRepository'
 import { InvalidUsernameOrPasswordError } from './errors/InvalidUsernameOrPasswordError'
+import { connectionRedis } from '../../../../infra/redis/connection'
 
 type TokenResponse = {
   token: string
@@ -47,6 +48,9 @@ export class AuthenticateUser {
       subject: user.id,
       expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
     })
+
+    const redisClient = new connectionRedis()
+    await redisClient.setValue(user.id, refreshToken)
 
     return right({ token, refreshToken })
   }
