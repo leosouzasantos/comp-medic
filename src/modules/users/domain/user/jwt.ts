@@ -2,6 +2,7 @@ import { sign, verify } from 'jsonwebtoken'
 import { InvalidJWTTokenError } from './errors/InvalidJWTTokenError'
 import { auth } from '../../../../config/auth'
 import { User } from './user'
+import { Either, left, right } from '../../../../core/logic/Either'
 
 export interface JWTData {
   userId: string
@@ -22,43 +23,36 @@ export class JWT {
     this.token = token
   }
 
-  static decodeToken(token: string): InvalidJWTTokenError | JWTTokenPayload {
+  static decodeToken(
+    token: string
+  ): Either<InvalidJWTTokenError, JWTTokenPayload> {
     try {
       const decode = verify(token, auth.secretKey) as JWTTokenPayload
-      return decode
+      return right(decode)
     } catch (err) {
-      return new InvalidJWTTokenError()
+      return left(new InvalidJWTTokenError())
     }
   }
 
-  static createFromJWT(token: string): InvalidJWTTokenError | JWT {
+  static createFromJWT(token: string): Either<InvalidJWTTokenError, JWT> {
     const jwtPayloadOrError = this.decodeToken(token)
 
-    if (jwtPayloadOrError instanceof InvalidJWTTokenError) {
-      return jwtPayloadOrError
+    if (jwtPayloadOrError.isLeft()) {
+      return left(jwtPayloadOrError.value)
     }
 
-    const jwt = new JWT({ token, userId: jwtPayloadOrError.sub })
-    return jwt
+    const jwt = new JWT({ token, userId: jwtPayloadOrError.value.sub })
+    return right(jwt)
   }
 
-  static create({ username, isAdmin, id }: User): JWT {
-    const token = sign(
-      {
-        user: {
-          username,
-          isAdmin,
-          id,
-        },
-      },
-      auth.secretKey,
-      {
-        subject: id,
-        expiresIn: auth.expiresIn,
-      }
-    )
+  static create(user: User): JWT {
+    const token = sign({}, auth.secretKey, {
+      subject: user.id,
+      expiresIn: auth.expiresIn,
+    })
 
-    const jwt = new JWT({ userId: User.id, token })
+    const jwt = new JWT({ userId: user.id, token })
+
     return jwt
   }
 }

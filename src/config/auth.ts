@@ -1,4 +1,4 @@
 export const auth = {
-  secretKey: process.env.SECRET_KEY_TOKEN || '',
-  expiresIn: process.env.EXPIRES_IN,
+  secretKey: '0902fbd4369bda2049e58402c9bbcadf' || '',
+  expiresIn: '1d',
 }
