@@ -1,3 +1,4 @@
+import { sign } from 'jsonwebtoken'
 import { Either, left, right } from '../../../../core/logic/Either'
 import { JWT } from '../../domain/user/jwt'
 
@@ -6,6 +7,7 @@ import { InvalidUsernameOrPasswordError } from './errors/InvalidUsernameOrPasswo
 
 type TokenResponse = {
   token: string
+  refreshToken: string
 }
 
 type AuthenticateUserRequest = {
@@ -39,6 +41,13 @@ export class AuthenticateUser {
 
     const { token } = JWT.create(user)
 
-    return right({ token })
+    const refreshTokenSecret = process.env.SECRET_KEY_REFRESH_TOKEN || ''
+
+    const refreshToken = sign({}, refreshTokenSecret, {
+      subject: user.id,
+      expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
+    })
+
+    return right({ token, refreshToken })
   }
 }

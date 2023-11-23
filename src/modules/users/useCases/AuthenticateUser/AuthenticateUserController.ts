@@ -25,8 +25,8 @@ export class AuthenticateUserController implements Controller {
         const error = result.value
         return clientError(error)
       } else {
-        const { token } = result.value
-        return ok({ token })
+        const { token, refreshToken } = result.value
+        return ok({ token, refreshToken })
       }
     } catch (err: any) {
       return fail(err)
