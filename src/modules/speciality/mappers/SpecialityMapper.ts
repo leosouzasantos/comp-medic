@@ -1,7 +1,7 @@
 import { Speciality as PersistenceSpeciality } from '@prisma/client'
 import { Speciality } from '../domain/speciality/speciality'
-import { Name } from '../domain/speciality/Name'
-import { Description } from '../domain/speciality/Description'
+import { Name } from '../domain/speciality/name'
+import { Description } from '../domain/speciality/description'
 
 export class SpecialityMapper {
   static toDomain(raw: PersistenceSpeciality): Speciality {

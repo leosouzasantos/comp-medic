@@ -6,13 +6,13 @@ import { InMemoryDoctorRepository } from '../../repositories/in-memory/InMemoryD
 import { User } from '../../../users/domain/user/user'
 import { Username } from '../../../users/domain/user/username'
 import { Name } from '../../../users/domain/user/name'
-import { Name as SpecialityName } from '../../../speciality/domain/speciality/Name'
+import { Name as SpecialityName } from '../../../speciality/domain/speciality/name'
 import { Password } from '../../../users/domain/user/password'
 import { CreateDoctor } from './CreateDoctorUseCase'
 import { Crm } from '../../domain/doctor/crm'
 import { Email } from '../../domain/doctor/email'
 import { Speciality } from '../../../speciality/domain/speciality/speciality'
-import { Description } from '../../../speciality/domain/speciality/Description'
+import { Description } from '../../../speciality/domain/speciality/description'
 
 let specialityRepository: InMemorySpecialityRepository
 let userRepository: InMemoryUserRepository

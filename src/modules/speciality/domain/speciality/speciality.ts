@@ -1,10 +1,10 @@
 import { SpecialityEntity } from '../../entities/SpecialityEntity'
 import { Either, right } from '../../../../core/logic/Either'
 
-import { Description } from './Description'
+import { Description } from './description'
 import { InvalidDescriptionError } from './errors/InvalidDescriptionError'
 import { InvalidNameError } from './errors/InvalidNameError'
-import { Name } from './Name'
+import { Name } from './name'
 
 interface ISpecialityProps {
   name: Name
