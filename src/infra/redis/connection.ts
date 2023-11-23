@@ -10,11 +10,11 @@ export class connectionRedis {
   }
 
   public async setValue(key: string, value: string) {
-    await this.client.set(key, value)
+    return await this.client.set(key, value)
   }
 
   public async getValue(key: string) {
-    await this.client.get(key)
+    return await this.client.get(key)
   }
 
   private createClient() {

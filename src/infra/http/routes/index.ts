@@ -12,6 +12,7 @@ import { appointmentRouter } from './appointmentRouter'
 const router = Router()
 
 router.use('/users', userRouter)
+router.use('/refresh-token', userRouter)
 router.use('/sessions', sessionsRouter)
 router.use('/specialities', specialityRouter)
 router.use('/doctor', doctorRouter)
